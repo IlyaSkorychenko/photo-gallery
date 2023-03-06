@@ -1,0 +1,12 @@
+/dist
+/node_modules
+
+/coverage
+/.nyc_output
+
+/.idea
+/.vscode
+/.db
+/.volume
+
+.env
