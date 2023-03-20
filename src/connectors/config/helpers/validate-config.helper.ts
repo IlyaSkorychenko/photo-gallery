@@ -1,12 +1,24 @@
+import { ValidationError } from '@nestjs/common';
 import { validateSync } from 'class-validator';
-import { JsonObject } from 'src/globals/types/json-object.types';
 
-export function validateConfig(obj: JsonObject) {
+export function validateConfig(obj: object) {
   const errors = validateSync(obj, {
     forbidNonWhitelisted: true
   });
 
-  if (errors.length > 0) {
-    throw new Error(JSON.stringify(errors[0]?.constraints, null, 2));
+  if (errors.length) {
+    throw new Error(JSON.stringify(getErrorsConstraintsRecursive(errors), null, 2));
   }
+}
+
+function getErrorsConstraintsRecursive(errors: ValidationError[], constraints: Record<string, string>[] = []) {
+  errors.forEach(error => {
+    constraints.push(error.constraints);
+
+    if (error.children) {
+      getErrorsConstraintsRecursive(error.children, constraints);
+    }
+  });
+
+  return constraints;
 }

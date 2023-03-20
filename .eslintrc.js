@@ -6,7 +6,7 @@ module.exports = {
     sourceType: 'module',
     ecmaVersion: 2020
   },
-  plugins: ['@typescript-eslint/eslint-plugin'],
+  plugins: ['@typescript-eslint/eslint-plugin', 'prettier'],
   extends: ['plugin:@typescript-eslint/recommended'],
   root: true,
   env: {
@@ -29,8 +29,9 @@ module.exports = {
     ],
     semi: [2, 'always'],
     'no-console': 'error',
-    'newline-before-return': 'off',
+    'newline-before-return': 'error',
     'no-unused-vars': 'error',
-    'max-lines-per-function': ['error', 120]
+    'max-lines-per-function': ['error', 120],
+    'padding-line-between-statements': 'error'
   }
 };

@@ -8,5 +8,5 @@ const apiConf = {
     main: 'api'
   }
 };
-const a = "some text";
+
 export default createConfigNamespace(CONFIG_API_TOKEN, apiConf, ApiEnvDto);

@@ -1,9 +1,10 @@
 import { Module } from '@nestjs/common';
-import { ConfigConnectorModule } from '../config/config-connector.module';
-import { CognitoService } from './cognito.service'
+import { CognitoService } from 'src/connectors/aws/cognito.service';
+import { ConfigConnectorModule } from 'src/connectors/config/config-connector.module';
 
 @Module({
   imports: [ConfigConnectorModule],
-  providers: [CognitoService]
+  providers: [CognitoService],
+  exports: [CognitoService]
 })
 export class AwsConnectorModule {}

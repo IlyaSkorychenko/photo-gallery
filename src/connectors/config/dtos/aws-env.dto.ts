@@ -1,16 +1,12 @@
 import { Expose } from 'class-transformer';
 import { IsString } from 'class-validator';
 
-export class CognitoEnvDto {
+export class AwsEnvDto {
   @Expose()
   @IsString()
-  COGNITO_POOL_ID: string;
+  ACCESS_KEY_ID: string;
 
   @Expose()
   @IsString()
-  COGNITO_CLIENT_ID: string;
-
-  @Expose()
-  @IsString()
-  COGNITO_REGION: string;
+  SECRET_ACCESS_KEY: string;
 }

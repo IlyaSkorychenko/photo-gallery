@@ -2,7 +2,7 @@ import { ConfigObject } from '@nestjs/config/dist/types';
 import { registerAs } from '@nestjs/config/dist/utils/register-as.util';
 import { ClassConstructor, plainToClass } from 'class-transformer';
 import { validateConfig } from 'src/connectors/config/helpers/validate-config.helper';
-import { JsonObject } from 'src/globals/types/json-object.types';
+import { JsonObject } from 'src/types/json-object.types';
 
 export function createConfigNamespace<T extends ConfigObject>(
   name: string,

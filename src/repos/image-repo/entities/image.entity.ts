@@ -1,4 +1,4 @@
-import { Timestamp } from 'src/globals/base-entities/timestamp.base-entity';
+import { Timestamp } from 'src/repos/common/base-entities/timestamp.base-entity';
 import { ResolutionEnum } from 'src/repos/image-repo/types/resolution.enum';
 import { Column, Entity, PrimaryColumn } from 'typeorm';
 
