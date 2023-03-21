@@ -2,18 +2,13 @@ import { CognitoIdentityServiceException } from '@aws-sdk/client-cognito-identit
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { CognitoService } from 'src/connectors/aws/cognito.service';
 import {
-  convertAuthenticationResul,
-  convertRefreshTokenResul
-} from 'src/modules/auth/helpers/convert-authentication-result.helper';
-import {
   IConfirmSignUpParams,
-  IRefreshedTokens,
   IResendConfirmSignUpParams,
   ISignInParams,
   ISignUpParams,
-  ITokens,
-  IUserData
-} from 'src/modules/auth/types/auth-service.types';
+  IVerifyTwoFactorParams
+} from 'src/modules/auth/types/auth-service-params.types';
+import { IRefreshedTokens, ITokens, IUserData } from 'src/modules/auth/types/auth-service.types';
 
 @Injectable()
 export class AuthService {
@@ -21,13 +16,7 @@ export class AuthService {
 
   public async signIn({ nickname, password, email, twoFactorCode }: ISignInParams): Promise<ITokens> {
     try {
-      const authenticationResult = await this.cognitoService.authenticateUser(
-        email || nickname,
-        password,
-        twoFactorCode
-      );
-
-      return convertAuthenticationResul(authenticationResult);
+      return await this.cognitoService.authenticateUser(email || nickname, password, twoFactorCode);
     } catch (e) {
       if ((e as CognitoIdentityServiceException).name === 'InvalidParameterException') {
         throw new BadRequestException('Two factor code is required for this user');
@@ -67,15 +56,13 @@ export class AuthService {
 
   public async getUserDataByAuthToken(accessToken: string): Promise<IUserData | null> {
     try {
-      const rawUserData = await this.cognitoService.getUserByAuthToken(accessToken);
-
-      return rawUserData as unknown as IUserData;
+      return await this.cognitoService.getUserByAuthToken(accessToken);
     } catch (e) {
       return null;
     }
   }
 
-  public async activateTwoFactor(accessToken: string): Promise<string> {
+  public async activateTwoFactorByAccessToken(accessToken: string): Promise<string> {
     try {
       return await this.cognitoService.setupMfa(accessToken);
     } catch (e) {
@@ -83,7 +70,7 @@ export class AuthService {
     }
   }
 
-  public async deactivateTwoFactor(accessToken: string): Promise<void> {
+  public async deactivateTwoFactorByAccessToken(accessToken: string): Promise<void> {
     try {
       await this.cognitoService.changeMfaSettings(accessToken, false);
     } catch (e) {
@@ -91,7 +78,7 @@ export class AuthService {
     }
   }
 
-  public async verifyTwoFactor(accessToken: string, twoFactorCode: string) {
+  public async verifyTwoFactor({ accessToken, twoFactorCode }: IVerifyTwoFactorParams) {
     try {
       await this.cognitoService.verifyMfa(accessToken, twoFactorCode);
     } catch (e) {
@@ -101,9 +88,7 @@ export class AuthService {
 
   public async refreshTokens(refreshToken: string): Promise<IRefreshedTokens> {
     try {
-      const authData = await this.cognitoService.authenticateByRefreshToken(refreshToken);
-
-      return convertRefreshTokenResul(authData);
+      return await this.cognitoService.authenticateByRefreshToken(refreshToken);
     } catch (e) {
       throw new BadRequestException();
     }

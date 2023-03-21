@@ -5,7 +5,6 @@ import {
   CognitoIdentityProviderClient,
   ConfirmSignUpCommand,
   GetUserCommand,
-  GetUserCommandOutput,
   InitiateAuthCommand,
   ResendConfirmationCodeCommand,
   RespondToAuthChallengeCommand,
@@ -15,6 +14,12 @@ import {
 } from '@aws-sdk/client-cognito-identity-provider';
 import { Injectable } from '@nestjs/common';
 import { AuthenticationResultType } from 'aws-sdk/clients/cognitoidentityserviceprovider';
+import {
+  IAuthenticationResult,
+  IRawUserAttributesMap,
+  IRefreshedAuthenticationResult,
+  IUserAttributesMap
+} from 'src/connectors/aws/types/cognito-service.types';
 import { ConfigConnectorService } from 'src/connectors/config/config-connector.service';
 
 @Injectable()
@@ -76,12 +81,27 @@ export class CognitoService {
     await this.client.send(command);
   }
 
-  getUserByAuthToken(accessToken: string): Promise<GetUserCommandOutput> {
+  async getUserByAuthToken(accessToken: string): Promise<IUserAttributesMap> {
     const command = new GetUserCommand({
       AccessToken: accessToken
     });
+    const result = await this.client.send(command);
+    const rawUserData = result.UserAttributes.reduce<IRawUserAttributesMap>(
+      (accumulator, attribute) => {
+        accumulator[attribute.Name] = attribute.Value;
 
-    return this.client.send(command);
+        return accumulator;
+      },
+      { email: '', email_verified: '', name: '', nickname: '', sub: '' }
+    );
+
+    return {
+      name: rawUserData.name,
+      email: rawUserData.email,
+      nickname: rawUserData.nickname,
+      isEmailVerified: Boolean(rawUserData.email_verified),
+      subscription: rawUserData.sub
+    };
   }
 
   async setupMfa(accessToken: string): Promise<string> {
@@ -118,7 +138,7 @@ export class CognitoService {
     await this.client.send(changeMfaSettingsCommand);
   }
 
-  async authenticateByRefreshToken(refreshToken: string): Promise<AuthenticationResultType> {
+  async authenticateByRefreshToken(refreshToken: string): Promise<IRefreshedAuthenticationResult> {
     const command = new InitiateAuthCommand({
       ClientId: this.clientId,
       AuthFlow: 'REFRESH_TOKEN_AUTH',
@@ -128,14 +148,20 @@ export class CognitoService {
     });
     const result = await this.client.send(command);
 
-    return result.AuthenticationResult;
+    return this.convertRefreshedAuthenticationResul(result.AuthenticationResult);
   }
 
-  async authenticateUser(
-    emailOrNickname: string,
-    password: string,
-    mfaCode?: string
-  ): Promise<AuthenticationResultType> {
+  private convertRefreshedAuthenticationResul(
+    authenticationResult: AuthenticationResultType
+  ): IRefreshedAuthenticationResult {
+    return {
+      accessToken: authenticationResult.AccessToken,
+      idToken: authenticationResult.IdToken,
+      expireIn: authenticationResult.ExpiresIn
+    };
+  }
+
+  async authenticateUser(emailOrNickname: string, password: string, mfaCode?: string): Promise<IAuthenticationResult> {
     const authCommand = new InitiateAuthCommand({
       ClientId: this.clientId,
       AuthFlow: 'USER_PASSWORD_AUTH',
@@ -147,7 +173,7 @@ export class CognitoService {
     const authResponse = await this.client.send(authCommand);
 
     if (!authResponse.ChallengeName) {
-      return authResponse.AuthenticationResult;
+      return this.convertAuthenticationResul(authResponse.AuthenticationResult);
     }
 
     switch (authResponse.ChallengeName) {
@@ -163,12 +189,21 @@ export class CognitoService {
         });
         const mfaResult = await this.client.send(mfaCommand);
 
-        return mfaResult.AuthenticationResult;
+        return this.convertAuthenticationResul(mfaResult.AuthenticationResult);
       }
 
       default: {
         throw new Error('Unsupported channel name');
       }
     }
+  }
+
+  private convertAuthenticationResul(authenticationResult: AuthenticationResultType): IAuthenticationResult {
+    return {
+      accessToken: authenticationResult.AccessToken,
+      refreshToken: authenticationResult.RefreshToken,
+      idToken: authenticationResult.IdToken,
+      expireIn: authenticationResult.ExpiresIn
+    };
   }
 }
