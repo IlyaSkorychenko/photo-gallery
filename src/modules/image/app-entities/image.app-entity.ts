@@ -1,11 +1,15 @@
 import { ResolutionEnum } from 'src/repos/image-repo/types/resolution.enum';
 
-export interface CreateImageRepoInterface {
-  userId: string;
+export class Image {
+  id: string;
   name: string;
+  url: string;
   resolution: ResolutionEnum;
-  format: string;
-  duplicateNameId: number;
   description?: string;
-  parentId?: string;
+  updatedAt: Date;
+  createdAt: Date;
+}
+
+export class ParentImage {
+  children: Image[];
 }

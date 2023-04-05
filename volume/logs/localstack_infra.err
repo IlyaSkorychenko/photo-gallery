@@ -1,7 +1,0 @@
-2023-03-03T13:39:55.349  WARN --- [-functhread3] hypercorn.error            : ASGI Framework Lifespan error, continuing without Lifespan support
-2023-03-03T13:39:55.349  WARN --- [-functhread3] hypercorn.error            : ASGI Framework Lifespan error, continuing without Lifespan support
-2023-03-03T13:39:55.350  INFO --- [-functhread3] hypercorn.error            : Running on https://0.0.0.0:4566 (CTRL + C to quit)
-2023-03-03T13:39:55.350  INFO --- [-functhread3] hypercorn.error            : Running on https://0.0.0.0:4566 (CTRL + C to quit)
-2023-03-03T13:40:00.470 ERROR --- [   asgi_gw_0] l.aws.handlers.logging     : exception during call chain: 
-2023-03-03T13:40:00.470  INFO --- [   asgi_gw_0] l.aws.handlers.service     : API action 'CreateUserPool' for service 'cognito-idp' not yet implemented or pro feature - check https://docs.localstack.cloud/user-guide/aws/feature-coverage for further information
-2023-03-03T13:40:00.472  INFO --- [   asgi_gw_0] localstack.request.aws     : AWS cognito-idp.CreateUserPool => 501 (InternalFailure)

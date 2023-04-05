@@ -6,11 +6,19 @@ import appConfigNamespace from 'src/connectors/config/config-namespaces/app.conf
 import awsConfigNamespace from 'src/connectors/config/config-namespaces/aws.config-namespace';
 import cognitoConfigNamespace from 'src/connectors/config/config-namespaces/cognito.config-namespace';
 import dbConfigNamespace from 'src/connectors/config/config-namespaces/db.config-namespace';
+import s3ConfigNamespace from 'src/connectors/config/config-namespaces/s3.config-namespace';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
-      load: [appConfigNamespace, apiConfigNamespace, dbConfigNamespace, cognitoConfigNamespace, awsConfigNamespace]
+      load: [
+        appConfigNamespace,
+        apiConfigNamespace,
+        dbConfigNamespace,
+        cognitoConfigNamespace,
+        s3ConfigNamespace,
+        awsConfigNamespace
+      ]
     })
   ],
   providers: [ConfigConnectorService],

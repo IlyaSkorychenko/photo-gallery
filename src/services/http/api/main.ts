@@ -3,8 +3,8 @@ import { NestFactory, Reflector } from '@nestjs/core';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import { ConfigConnectorService } from 'src/connectors/config/config-connector.service';
 import { EnvironmentTypes } from 'src/connectors/config/types/environmentTypes';
-import { generateValidationPipe } from 'src/services/http/common/pipes/validation.pipes';
 import { ApiServiceModule } from 'src/services/http/api/api-service.module';
+import { generateValidationPipe } from 'src/services/http/common/pipes/validation.pipes';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(ApiServiceModule);
@@ -14,10 +14,7 @@ async function bootstrap() {
 
   app.setGlobalPrefix(prefixes.main);
   app.useGlobalPipes(generateValidationPipe(NODE_ENV === EnvironmentTypes.local));
-  app.useGlobalInterceptors(
-    new ClassSerializerInterceptor(new Reflector())
-    // new ValidateInterceptor()
-  );
+  app.useGlobalInterceptors(new ClassSerializerInterceptor(new Reflector()));
 
   await app.listen(PORT, HOST);
 }

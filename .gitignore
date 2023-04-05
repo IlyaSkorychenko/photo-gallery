@@ -10,3 +10,5 @@
 /.volume
 
 .env
+
+.nestjs_repl_history

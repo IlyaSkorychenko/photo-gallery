@@ -1,8 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { InjectDataSource } from '@nestjs/typeorm';
-import { CreateImageRepoInterface } from 'src/repos/image-repo/types/create-image-repo.interface';
-import { DataSource, EntityManager } from 'typeorm';
 import { Image } from 'src/repos/image-repo/entities/image.entity';
+import { CreateImageRepoInterface } from 'src/repos/image-repo/types/create-image-repo.interface';
+import { ResolutionEnum } from 'src/repos/image-repo/types/resolution.enum';
+import { DataSource, EntityManager, IsNull } from 'typeorm';
 
 @Injectable()
 export class ImageRepoService {
@@ -15,22 +16,34 @@ export class ImageRepoService {
     return entityManager || this.dataSource.manager;
   }
 
-  public findByUserId(userId: string, entityManager?: EntityManager): Promise<Image[]> {
+  public fundByUniqueAttributes(
+    userId: string,
+    name: string,
+    format: string,
+    resolution = ResolutionEnum.full,
+    entityManager?: EntityManager
+  ): Promise<Image | null> {
     return this.getEntityManager(entityManager)
       .createQueryBuilder(Image, 'images')
-      .where('images.user_id = :userId', {
-        userId
+      .where({
+        userId,
+        name,
+        format,
+        resolution
       })
-      .getMany();
+      .orderBy('images.duplicateNameId', 'DESC')
+      .getOne();
   }
 
-  public findById(imageId: string, entityManager?: EntityManager): Promise<Image> {
+  public findAllParentsWithChildrenByUserId(userId: string, entityManager?: EntityManager): Promise<Image[]> {
     return this.getEntityManager(entityManager)
       .createQueryBuilder(Image, 'images')
-      .where('images.id = :imageId', {
-        imageId
+      .where({
+        parentId: IsNull(),
+        userId
       })
-      .getOne();
+      .leftJoinAndSelect('images.children', 'children')
+      .getMany();
   }
 
   public async create(imageData: CreateImageRepoInterface, entityManager?: EntityManager): Promise<boolean> {
@@ -41,6 +54,6 @@ export class ImageRepoService {
       .orIgnore(true)
       .execute();
 
-    return Boolean(raw);
+    return Boolean(raw[0]);
   }
 }

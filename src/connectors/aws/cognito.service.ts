@@ -1,5 +1,6 @@
 import {
   AssociateSoftwareTokenCommand,
+  AuthenticationResultType,
   ChallengeNameType,
   CognitoIdentityProvider,
   CognitoIdentityProviderClient,
@@ -13,7 +14,6 @@ import {
   VerifySoftwareTokenCommand
 } from '@aws-sdk/client-cognito-identity-provider';
 import { Injectable } from '@nestjs/common';
-import { AuthenticationResultType } from 'aws-sdk/clients/cognitoidentityserviceprovider';
 import {
   IAuthenticationResult,
   IRawUserAttributesMap,
