@@ -1,8 +1,22 @@
 import { Expose, Type } from 'class-transformer';
-import { IsDate, IsEnum, IsOptional, IsString, IsUrl, IsUUID, ValidateNested } from 'class-validator';
+import { IsDate, IsEnum, IsOptional, IsString, IsUUID, ValidateNested } from 'class-validator';
 import { ResolutionEnum } from 'src/repos/image-repo/types/resolution.enum';
 
-class ImageResponseValidatorDto {
+class CompressedImagesDto {
+  @Expose()
+  @IsUUID()
+  id: string;
+
+  @Expose()
+  @IsEnum(ResolutionEnum)
+  resolution: ResolutionEnum;
+
+  @Expose()
+  @IsString()
+  url: string;
+}
+
+export class GetAllResponseValidatorDto {
   @Expose()
   @IsUUID()
   id: string;
@@ -12,11 +26,7 @@ class ImageResponseValidatorDto {
   name: string;
 
   @Expose()
-  @IsEnum(ResolutionEnum)
-  resolution: ResolutionEnum;
-
-  @Expose()
-  @IsUrl()
+  @IsString()
   url: string;
 
   @Expose()
@@ -31,12 +41,10 @@ class ImageResponseValidatorDto {
   @Expose()
   @IsDate()
   createdAt: Date;
-}
 
-export class GetAllResponseValidatorDto extends ImageResponseValidatorDto {
   @Expose()
   @IsOptional()
   @ValidateNested({ each: true })
-  @Type(() => ImageResponseValidatorDto)
-  children: ImageResponseValidatorDto[];
+  @Type(() => CompressedImagesDto)
+  compressedImages: CompressedImagesDto[];
 }

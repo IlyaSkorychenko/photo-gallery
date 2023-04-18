@@ -10,6 +10,10 @@ export class CognitoEnvDto {
   @IsString()
   COGNITO_CLIENT_ID: string;
 
+  // @Expose()
+  // @IsString()
+  // COGNITO_CLIENT_SECRET: string;
+
   @Expose()
   @IsString()
   COGNITO_REGION: string;

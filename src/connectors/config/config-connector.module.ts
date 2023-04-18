@@ -7,6 +7,7 @@ import awsConfigNamespace from 'src/connectors/config/config-namespaces/aws.conf
 import cognitoConfigNamespace from 'src/connectors/config/config-namespaces/cognito.config-namespace';
 import dbConfigNamespace from 'src/connectors/config/config-namespaces/db.config-namespace';
 import s3ConfigNamespace from 'src/connectors/config/config-namespaces/s3.config-namespace';
+import sqsConfigNamespace from 'src/connectors/config/config-namespaces/sqs.config-namespace';
 
 @Module({
   imports: [
@@ -17,6 +18,7 @@ import s3ConfigNamespace from 'src/connectors/config/config-namespaces/s3.config
         dbConfigNamespace,
         cognitoConfigNamespace,
         s3ConfigNamespace,
+        sqsConfigNamespace,
         awsConfigNamespace
       ]
     })

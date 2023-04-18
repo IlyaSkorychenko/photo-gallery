@@ -22,16 +22,20 @@ import {
 } from 'src/connectors/aws/types/cognito-service.types';
 import { ConfigConnectorService } from 'src/connectors/config/config-connector.service';
 
+// TODO implement SecretHash support
 @Injectable()
 export class CognitoService {
   private readonly client: CognitoIdentityProviderClient;
   private readonly clientId: string;
 
+  // private readonly clientSecret: string;
+
   constructor(private configConnectorService: ConfigConnectorService) {
-    const { COGNITO_CLIENT_ID, COGNITO_REGION } = configConnectorService.getCognitoConfig();
+    const { COGNITO_CLIENT_ID, /*COGNITO_CLIENT_SECRET,*/ COGNITO_REGION } = configConnectorService.getCognitoConfig();
     const { SECRET_ACCESS_KEY, ACCESS_KEY_ID } = configConnectorService.getAwsConfig();
 
     this.clientId = COGNITO_CLIENT_ID;
+    // this.clientSecret = COGNITO_CLIENT_SECRET;
     this.client = new CognitoIdentityProvider({
       region: COGNITO_REGION,
       credentials: {
@@ -41,9 +45,17 @@ export class CognitoService {
     });
   }
 
+  // private makeSecretHash(nickname: string): string {
+  //   const hasher = createHmac('sha256', this.clientSecret);
+  //   hasher.update(`${nickname}${this.clientId}`);
+  //
+  //   return hasher.digest('base64');
+  // }
+
   async registerUser(nickname: string, email: string, name: string, password: string): Promise<void> {
     const command = new SignUpCommand({
       ClientId: this.clientId,
+      // SecretHash: this.makeSecretHash(nickname),
       Password: password,
       Username: nickname,
       UserAttributes: [
@@ -67,6 +79,7 @@ export class CognitoService {
   async confirmUserRegistration(nickname: string, confirmationCode: string): Promise<void> {
     const command = new ConfirmSignUpCommand({
       ClientId: this.clientId,
+      // SecretHash: this.makeSecretHash(nickname),
       Username: nickname,
       ConfirmationCode: confirmationCode
     });
@@ -76,6 +89,7 @@ export class CognitoService {
   async resendRegistrationConfirmCode(nickname: string): Promise<void> {
     const command = new ResendConfirmationCodeCommand({
       ClientId: this.clientId,
+      // SecretHash: this.makeSecretHash(nickname),
       Username: nickname
     });
     await this.client.send(command);
@@ -144,6 +158,7 @@ export class CognitoService {
       AuthFlow: 'REFRESH_TOKEN_AUTH',
       AuthParameters: {
         REFRESH_TOKEN: refreshToken
+        // SECRET_HASH: this.makeSecretHash(nickname)
       }
     });
     const result = await this.client.send(command);
@@ -168,6 +183,7 @@ export class CognitoService {
       AuthParameters: {
         USERNAME: emailOrNickname,
         PASSWORD: password
+        // SECRET_HASH: this.makeSecretHash(emailOrNickname)
       }
     });
     const authResponse = await this.client.send(authCommand);

@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { InjectDataSource } from '@nestjs/typeorm';
+import { CompressedImage } from 'src/repos/image-repo/entities/compressed-image.entity';
 import { Image } from 'src/repos/image-repo/entities/image.entity';
-import { CreateImageRepoInterface } from 'src/repos/image-repo/types/create-image-repo.interface';
-import { ResolutionEnum } from 'src/repos/image-repo/types/resolution.enum';
-import { DataSource, EntityManager, IsNull } from 'typeorm';
+import { ICreateCompressImageRepo, ICreateImageRepo } from 'src/repos/image-repo/types/image-repo-service.types';
+import { DataSource, EntityManager } from 'typeorm';
 
 @Injectable()
 export class ImageRepoService {
@@ -20,7 +20,6 @@ export class ImageRepoService {
     userId: string,
     name: string,
     format: string,
-    resolution = ResolutionEnum.full,
     entityManager?: EntityManager
   ): Promise<Image | null> {
     return this.getEntityManager(entityManager)
@@ -28,32 +27,55 @@ export class ImageRepoService {
       .where({
         userId,
         name,
-        format,
-        resolution
+        format
       })
       .orderBy('images.duplicateNameId', 'DESC')
       .getOne();
   }
 
-  public findAllParentsWithChildrenByUserId(userId: string, entityManager?: EntityManager): Promise<Image[]> {
+  public findAllParentsWithCompressedImagesByUserId(userId: string, entityManager?: EntityManager): Promise<Image[]> {
     return this.getEntityManager(entityManager)
       .createQueryBuilder(Image, 'images')
       .where({
-        parentId: IsNull(),
         userId
       })
-      .leftJoinAndSelect('images.children', 'children')
+      .leftJoinAndSelect('images.compressedImages', 'compressedImages')
       .getMany();
   }
 
-  public async create(imageData: CreateImageRepoInterface, entityManager?: EntityManager): Promise<boolean> {
-    const { raw } = await this.getEntityManager(entityManager)
+  public async create(imageData: ICreateImageRepo, entityManager?: EntityManager): Promise<Image | null> {
+    const { raw }: { raw: Image[] } = await this.getEntityManager(entityManager)
       .createQueryBuilder(Image, 'images')
       .insert()
       .values(imageData)
       .orIgnore(true)
+      .returning('*')
       .execute();
 
-    return Boolean(raw[0]);
+    return raw[0] || null;
+  }
+
+  public findById(id: string, entityManager?: EntityManager): Promise<Image | null> {
+    return this.getEntityManager(entityManager)
+      .createQueryBuilder(Image, 'images')
+      .where({
+        id
+      })
+      .getOne();
+  }
+
+  public async createCompressedImage(
+    compressedImageData: ICreateCompressImageRepo,
+    entityManager?: EntityManager
+  ): Promise<CompressedImage | null> {
+    const { raw }: { raw: CompressedImage[] } = await this.getEntityManager(entityManager)
+      .createQueryBuilder(CompressedImage, 'compressedImages')
+      .insert()
+      .values(compressedImageData)
+      .orIgnore(true)
+      .returning('*')
+      .execute();
+
+    return raw[0] || null;
   }
 }

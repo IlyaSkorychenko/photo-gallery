@@ -1,7 +1,7 @@
 import { IsEmail, IsNumberString, IsOptional, IsString, Length, ValidateIf } from 'class-validator';
 
 export class SignInRequestValidatorDto {
-  @ValidateIf((o) => Boolean(o.email))
+  @ValidateIf((o) => !Boolean(o.email))
   @IsString()
   nickname: string;
 

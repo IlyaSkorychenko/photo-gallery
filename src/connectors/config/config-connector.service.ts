@@ -6,12 +6,14 @@ import awsConfigNamespace from 'src/connectors/config/config-namespaces/aws.conf
 import cognitoConfigNamespace from 'src/connectors/config/config-namespaces/cognito.config-namespace';
 import dbConfigNamespace from 'src/connectors/config/config-namespaces/db.config-namespace';
 import s3ConfigNamespace from 'src/connectors/config/config-namespaces/s3.config-namespace';
+import sqsConfigNamespace from 'src/connectors/config/config-namespaces/sqs.config-namespace';
 import { ApiEnvDto } from 'src/connectors/config/dtos/api-env.dto';
 import { AppEnvDto } from 'src/connectors/config/dtos/app-env.dto';
 import { AwsEnvDto } from 'src/connectors/config/dtos/aws-env.dto';
 import { CognitoEnvDto } from 'src/connectors/config/dtos/cognito-env.dto';
 import { DbEnvDto } from 'src/connectors/config/dtos/db-env.dto';
 import { S3EnvDto } from 'src/connectors/config/dtos/s3-env.dto';
+import { SqsEnvDto } from 'src/connectors/config/dtos/sqs-env.dto';
 
 @Injectable()
 export class ConfigConnectorService {
@@ -27,7 +29,9 @@ export class ConfigConnectorService {
     @Inject(s3ConfigNamespace.KEY)
     private s3Config: ConfigType<typeof s3ConfigNamespace>,
     @Inject(awsConfigNamespace.KEY)
-    private awsConfig: ConfigType<typeof awsConfigNamespace>
+    private awsConfig: ConfigType<typeof awsConfigNamespace>,
+    @Inject(sqsConfigNamespace.KEY)
+    private sqsConfig: ConfigType<typeof sqsConfigNamespace>
   ) {}
 
   getDbConfig(): DbEnvDto {
@@ -52,5 +56,9 @@ export class ConfigConnectorService {
 
   getAwsConfig(): AwsEnvDto {
     return this.awsConfig;
+  }
+
+  getSqsConfig(): SqsEnvDto {
+    return this.sqsConfig;
   }
 }

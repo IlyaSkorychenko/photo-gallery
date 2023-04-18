@@ -1,5 +1,5 @@
 export enum ResolutionEnum {
-  full = 'full',
+  high = 'high',
   medium = 'medium',
   low = 'low'
 }

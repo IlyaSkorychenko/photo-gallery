@@ -17,5 +17,5 @@ export const connection = new DataSource({
   port: parseInt(dbConfig.DB_PORT),
   database: dbConfig.DB_NAME,
   migrations: ['src/connectors/database/migrations/*.ts'],
-  entities: ['src/**/app-entities/*.entity.ts']
+  entities: ['src/**/*.entity.ts']
 });

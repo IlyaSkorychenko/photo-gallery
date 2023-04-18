@@ -27,7 +27,7 @@ export class ValidateResponseInterceptor<T extends object> implements NestInterc
         }
 
         if (response instanceof Array) {
-          return from(response.map((r) => this.validate(r)));
+          return from(Promise.all(response.map((r) => this.validate(r))));
         }
 
         return from(this.validate(response));

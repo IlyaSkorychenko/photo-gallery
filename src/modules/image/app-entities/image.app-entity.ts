@@ -1,15 +1,12 @@
-import { ResolutionEnum } from 'src/repos/image-repo/types/resolution.enum';
+import { CompressedImage } from 'src/modules/image/app-entities/compressed-image.app-entity';
 
 export class Image {
   id: string;
   name: string;
   url: string;
-  resolution: ResolutionEnum;
+  format: string;
   description?: string;
   updatedAt: Date;
   createdAt: Date;
-}
-
-export class ParentImage {
-  children: Image[];
+  compressedImages?: CompressedImage[];
 }

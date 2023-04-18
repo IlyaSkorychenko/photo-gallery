@@ -1,9 +1,9 @@
 import { Timestamp } from 'src/repos/common/base-entities/timestamp.base-entity';
-import { ResolutionEnum } from 'src/repos/image-repo/types/resolution.enum';
-import { Column, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn, Unique } from 'typeorm';
+import { CompressedImage } from 'src/repos/image-repo/entities/compressed-image.entity';
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn, Unique } from 'typeorm';
 
 @Entity('images')
-@Unique(['userId', 'name', 'duplicateNameId', 'format', 'resolution'])
+@Unique(['userId', 'name', 'duplicateNameId', 'format'])
 export class Image extends Timestamp {
   @PrimaryGeneratedColumn('uuid')
   id: string;
@@ -42,25 +42,17 @@ export class Image extends Timestamp {
   format: string;
 
   @Column({
-    type: 'enum',
-    enum: ResolutionEnum,
+    type: 'smallint',
     nullable: false
   })
-  resolution: ResolutionEnum;
+  height: number;
 
   @Column({
-    name: 'parent_id',
-    type: 'uuid',
-    nullable: true
+    type: 'smallint',
+    nullable: false
   })
-  parentId: string;
+  width: number;
 
-  @OneToMany(() => Image, (image) => image.parent)
-  children: Image[];
-
-  @ManyToOne(() => Image, (image) => image.children)
-  @JoinColumn({
-    name: 'parent_id'
-  })
-  parent: Image;
+  @OneToMany(() => CompressedImage, (compressedImage) => compressedImage.image)
+  compressedImages: CompressedImage[];
 }

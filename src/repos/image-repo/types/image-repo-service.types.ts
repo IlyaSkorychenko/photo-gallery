@@ -1,11 +1,16 @@
 import { ResolutionEnum } from 'src/repos/image-repo/types/resolution.enum';
 
-export interface CreateImageRepoInterface {
+export interface ICreateImageRepo {
   userId: string;
   name: string;
-  resolution: ResolutionEnum;
   format: string;
   duplicateNameId: number;
+  width: number;
+  height: number;
   description?: string;
-  parentId?: string;
+}
+
+export interface ICreateCompressImageRepo {
+  imageId: string;
+  resolution: ResolutionEnum;
 }
