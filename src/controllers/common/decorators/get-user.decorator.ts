@@ -6,6 +6,7 @@ import { JwtUserValidatorDto } from 'src/controllers/common/validator-dtos/jwt-u
 import { ICognitoAccessUser } from 'src/modules/auth/types/cognito-access-strategy.types';
 import { IJwtUser } from 'src/modules/auth/types/jwt-strategy.types';
 
+// for cognito-access strategy only
 export const GetCognitoUser = createParamDecorator((_: unknown, context: ExecutionContext): ICognitoAccessUser => {
   const request = context.switchToHttp().getRequest();
   const userDto = plainToInstance(CognitoUserValidatorDto, request.user, {
@@ -22,6 +23,7 @@ export const GetCognitoUser = createParamDecorator((_: unknown, context: Executi
   return userDto;
 });
 
+// for jwt strategy only
 export const GetJwtUser = createParamDecorator((_: unknown, context: ExecutionContext): IJwtUser => {
   const request = context.switchToHttp().getRequest();
   const userDto = plainToInstance(JwtUserValidatorDto, request.user, {

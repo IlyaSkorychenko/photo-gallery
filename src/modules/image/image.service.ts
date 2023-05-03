@@ -13,7 +13,7 @@ import { ImageRepoService } from 'src/repos/image-repo/image-repo.service';
 export class ImageService {
   constructor(private readonly imageRepoService: ImageRepoService, private readonly s3Service: S3Service) {}
 
-  public async create({ userId, name, format, description, bufferData }: ICreateParams): Promise<Image> {
+  public async create({ userId, name, format, description, bufferData }: ICreateParams): Promise<string> {
     const { width, height } = imageSize(bufferData);
     const existImage = await this.imageRepoService.fundByUniqueAttributes(userId, name, format);
     let duplicateNameId = 1;
@@ -22,7 +22,7 @@ export class ImageService {
       duplicateNameId = existImage.duplicateNameId + 1;
     }
 
-    const imageEntity = await this.imageRepoService.create({
+    const newImageId = await this.imageRepoService.createAndReturnId({
       userId,
       name,
       description,
@@ -31,9 +31,9 @@ export class ImageService {
       width,
       height
     });
-    await this.s3Service.uploadFile(`${imageEntity.id}.${imageEntity.format}`, bufferData);
+    await this.s3Service.uploadFile(`${newImageId}.${format}`, bufferData);
 
-    return this.formatImageEntity(imageEntity);
+    return newImageId;
   }
 
   private formatImageEntity(image: ImageEntity, compressedImages?: CompressedImage[]) {

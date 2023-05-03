@@ -1,31 +1,26 @@
-## Installation
+# Local
 
-```bash
-$ npm install
-```
+---
 
-## Running the app
+## API local
 
-```bash
-# development
-$ npm run start
+1. Create and fill `.env`
+2.  ```bash
+    $ npm ci
+    $ npm run docker:env
+    $ npm run db:migration:run
+    $ npm run api:start[:watch/:debug]
+    ```
 
-# watch mode
-$ npm run start:dev
+## Image compressor consumer
 
-# production mode
-$ npm run start:prod
-```
+1. Install `imagemagick` (https://imagemagick.org/script/download.php)
+2. ```bash
+    $ npm run image-compressor:start[:watch]
+    ```
 
-## Test
+## Postman
 
-```bash
-# unit tests
-$ npm run test
+Use postman collection: `photo_gallery.postman_collection.json`
 
-# e2e tests
-$ npm run test:e2e
-
-# test coverage
-$ npm run test:cov
-```
+---

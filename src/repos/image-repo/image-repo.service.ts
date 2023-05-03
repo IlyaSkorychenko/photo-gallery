@@ -43,8 +43,8 @@ export class ImageRepoService {
       .getMany();
   }
 
-  public async create(imageData: ICreateImageRepo, entityManager?: EntityManager): Promise<Image | null> {
-    const { raw }: { raw: Image[] } = await this.getEntityManager(entityManager)
+  public async createAndReturnId(imageData: ICreateImageRepo, entityManager?: EntityManager): Promise<string> {
+    const { raw }: { raw: (Image | null)[] } = await this.getEntityManager(entityManager)
       .createQueryBuilder(Image, 'images')
       .insert()
       .values(imageData)
@@ -52,7 +52,13 @@ export class ImageRepoService {
       .returning('*')
       .execute();
 
-    return raw[0] || null;
+    const [newImage] = raw;
+
+    if (!newImage) {
+      return null;
+    }
+
+    return newImage.id;
   }
 
   public findById(id: string, entityManager?: EntityManager): Promise<Image | null> {

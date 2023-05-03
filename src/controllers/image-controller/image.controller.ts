@@ -3,6 +3,7 @@ import { AuthGuard } from '@nestjs/passport';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { GetJwtUser } from 'src/controllers/common/decorators/get-user.decorator';
 import { ValidateResponseInterceptor } from 'src/controllers/common/interseptors/ValidateResponseInterceptor';
+import { CreateResponseValidatorDto } from 'src/controllers/image-controller/response-validator-dtos/create.response-validator-dto';
 import { GetAllResponseValidatorDto } from 'src/controllers/image-controller/response-validator-dtos/get-all.response-validator-dto';
 import { ImageFileValidator } from 'src/controllers/image-controller/validators/image-file.validator';
 import { IJwtUser } from 'src/modules/auth/types/jwt-strategy.types';
@@ -19,6 +20,7 @@ export class ImageController {
   @Post('upload')
   @UseGuards(AuthGuard('jwt'))
   @UseInterceptors(FileInterceptor('image'))
+  @UseInterceptors(new ValidateResponseInterceptor(CreateResponseValidatorDto))
   async upload(
     @UploadedFile(new ParseFilePipe({ validators: [new ImageFileValidator()] }))
     file: Express.Multer.File,
@@ -27,12 +29,16 @@ export class ImageController {
     const userId = user.sub;
     const nameData = file.originalname.split('.');
 
-    await this.imageProducerService.processNewImage({
+    const newImageId = await this.imageProducerService.processNewImage({
       userId,
       bufferData: file.buffer,
       format: nameData.pop(),
       name: nameData.join('.')
     });
+
+    return {
+      id: newImageId
+    };
   }
 
   @Get('/')

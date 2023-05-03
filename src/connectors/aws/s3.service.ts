@@ -66,6 +66,8 @@ export class S3Service {
       arrayBuffer.push(Buffer.from(data));
     }
 
+    body.destroy();
+
     return Buffer.concat(arrayBuffer);
   }
 }

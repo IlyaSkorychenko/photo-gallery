@@ -1,0 +1,354 @@
+{
+	"info": {
+		"_postman_id": "bc31f88b-1bb9-46b6-b263-bd95e5ff9eea",
+		"name": "Photo gallery",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "24941983"
+	},
+	"item": [
+		{
+			"name": "Auth",
+			"item": [
+				{
+					"name": "Sign up",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"nickname\": \"illia\",\n    \"name\": \"I\",\n    \"email\": \"skorichenkoillya@gmail.com\",\n    \"password\": \"Qwerty123!\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{API}}/{{AUTH}}/sign-up",
+							"host": [
+								"{{API}}"
+							],
+							"path": [
+								"{{AUTH}}",
+								"sign-up"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Confirm sign up",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"nickname\": \"illia\",\n    \"code\": \"253023\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{API}}/{{AUTH}}/confirm-sign-up",
+							"host": [
+								"{{API}}"
+							],
+							"path": [
+								"{{AUTH}}",
+								"confirm-sign-up"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Resend confirmation code",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"nickname\": \"user5\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{API}}/{{AUTH}}/resend-confirmation-code",
+							"host": [
+								"{{API}}"
+							],
+							"path": [
+								"{{AUTH}}",
+								"resend-confirmation-code"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Login",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const jsonData = JSON.parse(responseBody);",
+									"pm.collectionVariables.set(\"ACCESS_TOKEN\", jsonData.accessToken);",
+									"pm.collectionVariables.set(\"REFRESH_TOKEN\", jsonData.refreshToken);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"skorichenkoillya@gmail.com\",\n    \"password\": \"Qwerty123!\",\n    \"twoFactorCode\": \"882107\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{API}}/{{AUTH}}/sign-in",
+							"host": [
+								"{{API}}"
+							],
+							"path": [
+								"{{AUTH}}",
+								"sign-in"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Refrsh tokens",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"refreshToken\": \"eyJjdHkiOiJKV1QiLCJlbmMiOiJBMjU2R0NNIiwiYWxnIjoiUlNBLU9BRVAifQ.c30C8EEafSyhF1AUBKxMpTeL6BkvK-TjlE-5G7hZHwgIz4LTOc67MRmtJKak6eVvqWhN23HyCAd8Y-9CYHZ1BQ-kAh-s0vTwLA_wPGDlhzRG6qMVp1wvvqFDfkZYYXNYvdqFztBHbjdiwtqmis3s65FfaRkchwh73kUnVltyK_SakuvvizZ-2e-x1dRVaAZktzjddy9bvX3iYsbsQoVENe04lBa0SlbGygKM90k-PRkaRQU2_k8-jus5XDhwmCn6UVZcKv-XdA3hqxOypGy9QN4mH9E3WVMQhd_J6df9W3sXnSppj6_6IFYywWOHL0w364dA7wbsXwIyrKE4pnBgyA.WmnHt5ie4SsTrFpC.TzSLTRKPD1q-lRX7eLigYiV8YQNJ_Upa4hzK2yFX23uaRZoz6PYcJ5svvTCJokPUQ66I83Ev19-05K_J_VVtLPud8iHJgSqB4clDqJn6zIFTBkMaiPT6VpYr2nVD9ilNB8__hQClN4fyGI4kO2_IJ2yr-M9kocvcbX739S3U_zlxf8TKf5NgnHhRPTLwVe7_wClIRMAJQBxmazuS58OmPdFGGYsb_2ppXIVnuo4cvW-nI8zEkfoYc_mRMKlTGCi48DBkRB9i_ml3uM5nOXbQnSlunJd8nae-DcdTJbWaxet9uwSAbswoLg2KwcYV98TAvBhFO_tOXnA_sHBCK8qder4ryJyI3yM_p6bZdZWkFxfMubrPBY4wXxkflUjxQuySeicBoYgY4R3qBj32GYoYUwyLJvbQWO69G0BTeDwy9mT4DVivev8VkJ-mayMQ95qlSyR86nfKQ0uXzDlZomWTQltWXsSGpF_Aejm5xY1OTruYLOYQMJOyyJgx8MYvZjaF55tz02EFtayVkTg9u543RBaZVE-ukWZpBC2O1qHZQkv4cgYEhZbyTKK4Ac5S2e34RIdr_Ddw18DFc_GPb0WSCZz7N6UC3IDQGjDB8Xwe0JMc2XtWl2c8bvUczPnmt-CDVgi8lZRr3hnTgymtrmWfCQIMQ_Tym3nd9VXg_X__wGmEP8gbyZCP687NVBoWSRNRsbhPbg5D9wuYzD-k5WgsTV5_cTJz6hVh0oF8sLIl3pB09SrHdKA6C9km_mOASpszBWewK0syn3tN6Yz2TEe24AgXLoXp-6D3KOi7ha5G_KrqxzFse_n8lkUmDBfoKWFi55myg3x4pX7AgQFK0P8dC1DYznLr2qTD_WCd9ZLL8b7KCj15lBiZ9AVWd5ZjJMHZ5zIS9mhKni_nyNrXUxhTgWTjqVtvJp_4ks29-4j2YWPqlVIVriHr7EBsY3MIgrEEzWwradpiQm5CsRxAv_6eH3mE4b5_U3UfyKYlGg9fcpRVbjSSqqy1hXx2LnuYl93u-6ZkEjVPnVIxXzDvcf-FLlaCrFY04xJ5fEwUMrwcMeCpjJTZl0tu6ZNQWMa5HvwBmw1vhJF86B7cvzzelZtqO3n9VcxBMEJvJ_7SWjI3TWR6n_bGsLK4jOG2JcgShONPfNET8RSoptNAMMf9pHrxvMcyfeNbrcHkZqa9froqpJbjGQ1LsE1jxuYey701yWMM4Es5t5C4M_1n2-6n8AyuYo_F1CyokTZeA6O1Boip4FTwVFIc3Y4vSdgyWx5aOA3axHnTakM.ZSRhRBcUyDB3923kFtbvBQ\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{API}}/{{AUTH}}/refresh-tokens",
+							"host": [
+								"{{API}}"
+							],
+							"path": [
+								"{{AUTH}}",
+								"refresh-tokens"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Activate two factor",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{API}}/{{AUTH}}/activate-two-factor",
+							"host": [
+								"{{API}}"
+							],
+							"path": [
+								"{{AUTH}}",
+								"activate-two-factor"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Verify two factor",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"twoFactorCode\": \"856476\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{API}}/{{AUTH}}/verify-two-factor",
+							"host": [
+								"{{API}}"
+							],
+							"path": [
+								"{{AUTH}}",
+								"verify-two-factor"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Deactivate two factor",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{API}}/{{AUTH}}/deactivate-two-factor",
+							"host": [
+								"{{API}}"
+							],
+							"path": [
+								"{{AUTH}}",
+								"deactivate-two-factor"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			]
+		},
+		{
+			"name": "Images",
+			"item": [
+				{
+					"name": "Upload",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "image",
+									"type": "file",
+									"src": "Screenshot 2023-01-31 at 14.40.47.png"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{API}}/{{IMAGES}}/upload",
+							"host": [
+								"{{API}}"
+							],
+							"path": [
+								"{{IMAGES}}",
+								"upload"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get All",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{API}}/{{IMAGES}}/",
+							"host": [
+								"{{API}}"
+							],
+							"path": [
+								"{{IMAGES}}",
+								""
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "{{ACCESS_TOKEN}}",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "API",
+			"value": "http://localhost:3000/api",
+			"type": "string"
+		},
+		{
+			"key": "IMAGES",
+			"value": "images",
+			"type": "string"
+		},
+		{
+			"key": "AUTH",
+			"value": "auth",
+			"type": "string"
+		},
+		{
+			"key": "ACCESS_TOKEN",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "REFRESH_TOKEN",
+			"value": "",
+			"type": "string"
+		}
+	]
+}

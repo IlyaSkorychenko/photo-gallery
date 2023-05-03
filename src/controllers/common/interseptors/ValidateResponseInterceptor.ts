@@ -1,7 +1,7 @@
 import { CallHandler, NestInterceptor } from '@nestjs/common';
 import { ClassConstructor, plainToInstance } from 'class-transformer';
 import { validateOrReject } from 'class-validator';
-import { from, Observable, of, switchMap } from 'rxjs';
+import { from, Observable, switchMap } from 'rxjs';
 
 export class ValidateResponseInterceptor<T extends object> implements NestInterceptor {
   constructor(private dtoConstructor: ClassConstructor<T>) {}
@@ -22,8 +22,8 @@ export class ValidateResponseInterceptor<T extends object> implements NestInterc
   intercept(_, next: CallHandler): Observable<unknown> | Promise<Observable<unknown>> {
     return next.handle().pipe(
       switchMap((response) => {
-        if (typeof response !== 'object' || response === null) {
-          return of(response);
+        if (typeof response !== 'object' || !response) {
+          throw new Error('Invalid response');
         }
 
         if (response instanceof Array) {

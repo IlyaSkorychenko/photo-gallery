@@ -34,8 +34,10 @@ export class ImageProducerService {
     ]);
   }
 
-  public async processNewImage(createParams: ICreateParams) {
-    const image = await this.imageService.create(createParams);
-    await this.sendMessages(image.id);
+  public async processNewImage(createParams: ICreateParams): Promise<string> {
+    const newImageId = await this.imageService.create(createParams);
+    await this.sendMessages(newImageId);
+
+    return newImageId;
   }
 }
