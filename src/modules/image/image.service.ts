@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { plainToInstance } from 'class-transformer';
 import { imageSize } from 'image-size';
 import { S3Service } from 'src/connectors/aws/s3.service';
@@ -8,6 +8,7 @@ import { ICreateParams } from 'src/modules/image/types/image-service-params.type
 import { CompressedImage as CompressedImageEntity } from 'src/repos/image-repo/entities/compressed-image.entity';
 import { Image as ImageEntity } from 'src/repos/image-repo/entities/image.entity';
 import { ImageRepoService } from 'src/repos/image-repo/image-repo.service';
+import { ResolutionEnum } from 'src/repos/image-repo/types/resolution.enum';
 
 @Injectable()
 export class ImageService {
@@ -69,5 +70,18 @@ export class ImageService {
 
       return this.formatImageEntity(dbEntity, compressedImages);
     });
+  }
+
+  public async createCompressedImage(originalId: string, resolution: ResolutionEnum): Promise<string> {
+    const compressedImage = await this.imageRepoService.createCompressedImage({
+      imageId: originalId,
+      resolution
+    });
+
+    if (!compressedImage.id) {
+      throw new NotFoundException();
+    }
+
+    return compressedImage.id;
   }
 }

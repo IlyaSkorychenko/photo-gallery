@@ -13,7 +13,7 @@ export class ImageProducerService {
     private configConnectorService: ConfigConnectorService
   ) {}
 
-  private async sendMessages(imageId: string) {
+  private async sendMessages(imageId: string, imageFormat: string) {
     const { IMAGE_QUEUE_NAME } = this.configConnectorService.getSqsConfig();
 
     await Promise.all([
@@ -23,6 +23,9 @@ export class ImageProducerService {
           attributes: {
             id: {
               value: imageId
+            },
+            format: {
+              value: imageFormat
             },
             resolution: {
               value: resolution
@@ -36,7 +39,7 @@ export class ImageProducerService {
 
   public async processNewImage(createParams: ICreateParams): Promise<string> {
     const newImageId = await this.imageService.create(createParams);
-    await this.sendMessages(newImageId);
+    await this.sendMessages(newImageId, createParams.format);
 
     return newImageId;
   }

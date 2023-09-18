@@ -101,7 +101,7 @@ export class ImageConsumerService {
         originalId: image.id,
         originalHeight: image.height,
         originalWidth: image.width,
-        format: image.format,
+        format: message.attributes.format,
         resolution: message.attributes.resolution
       });
     } catch (e) {

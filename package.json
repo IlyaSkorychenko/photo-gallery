@@ -9,6 +9,8 @@
     "build": "nest build",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "api:start": "nest start --tsc --entryFile ./services/http/api/main",
+    "api:grpc:start": "nest start --tsc --entryFile ./services/grpc/api/main",
+    "api:grpc:debug": "nest start --tsc --debug --entryFile ./services/grpc/api/main",
     "api:start:watch": "nest start --tsc --watch --entryFile ./services/http/api/main",
     "api:start:debug": "nest start --tsc --debug --watch --entryFile ./services/http/api/main",
     "api:repl": "nest start --tsc --watch --entryFile ./src/services/http/api/repl",
@@ -32,10 +34,13 @@
     "@aws-sdk/client-cognito-identity-provider": "^3.292.0",
     "@aws-sdk/client-s3": "^3.304.0",
     "@aws-sdk/client-sqs": "^3.306.0",
-    "@nestjs/common": "^9.0.0",
+    "@grpc/grpc-js": "^1.8.17",
+    "@grpc/proto-loader": "^0.7.7",
+    "@nestjs/common": "^9.4.3",
     "@nestjs/config": "^2.3.1",
     "@nestjs/core": "^9.0.0",
     "@nestjs/jwt": "^10.0.2",
+    "@nestjs/microservices": "^10.0.4",
     "@nestjs/passport": "^9.0.3",
     "@nestjs/platform-express": "^9.0.0",
     "@nestjs/typeorm": "^9.0.1",
@@ -56,7 +61,8 @@
     "pg": "^8.10.0",
     "reflect-metadata": "^0.1.13",
     "rxjs": "^7.2.0",
-    "typeorm": "^0.3.12"
+    "typeorm": "^0.3.12",
+    "webpack": "^5.88.1"
   },
   "devDependencies": {
     "@nestjs/cli": "^9.0.0",

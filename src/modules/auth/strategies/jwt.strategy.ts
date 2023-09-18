@@ -19,7 +19,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
         jwksUri: `${authority}/.well-known/jwks.json`,
         handleSigningKeyError: (err, cb) => {
           if (err instanceof SigningKeyNotFoundError) {
-            return cb(new Error('This is bad'));
+            return cb(new Error('Invalid key'));
           }
 
           return cb(err);

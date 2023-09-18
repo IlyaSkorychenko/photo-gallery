@@ -1,0 +1,22 @@
+syntax = "proto3";
+
+package photoGallery;
+
+service ImageService {
+    rpc CreateCompressedImage (CreateCompressedImageData) returns (CompressedImage) {}
+}
+
+message CreateCompressedImageData {
+    enum COMPRESSION_LEVEL {
+        DEFAULT = 0;
+        HIGH = 1;
+        MEDIUM = 2;
+        LOW = 3;
+    }
+    string original_id = 1;
+    COMPRESSION_LEVEL type = 2;
+}
+
+message CompressedImage {
+    string id = 1;
+}
